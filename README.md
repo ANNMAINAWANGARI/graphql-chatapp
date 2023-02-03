@@ -1,0 +1,11 @@
+Techologies Used:
+- NextJS
+- TypeScript
+- GraphQL
+- Apollo GraphQL
+- NodeJS
+- MongoDB
+- Prisma
+- NextAuth
+- Chakra UI
+- GCP( Google Cloud Platform)
