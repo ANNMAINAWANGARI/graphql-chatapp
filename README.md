@@ -6,6 +6,6 @@ Techologies Used:
 - NodeJS
 - MongoDB
 - Prisma
-- NextAuth
+- NextAuth :  a complete open-source authentication solution for Next.js applications
 - Chakra UI
 - GCP( Google Cloud Platform)
