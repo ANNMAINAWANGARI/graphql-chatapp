@@ -1,6 +1,4 @@
 "use client";
-import { SessionProvider } from 'next-auth/react'
-import './globals.css'
 import AuthContext from "./AuthContext";
 import { ChakraProvider } from '@chakra-ui/react'
 import {theme} from '../chakra/theme'
