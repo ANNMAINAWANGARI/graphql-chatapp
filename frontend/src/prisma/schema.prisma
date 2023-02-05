@@ -1,7 +1,7 @@
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL") // Only needed when using a cloud provider that doesn't support the creation of new databases, like Heroku. Learn more: https://pris.ly/migrate-shadow
+  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL") // Only needed when using a cloud provider that doesn't support the creation of new databases, like Heroku. Learn more: https://pris.ly/migrate-shadow
 }
 
 generator client {
@@ -9,7 +9,7 @@ generator client {
 }
 
 model Account {
-  id  String  @id @default(auto()) @map("_id") @db.ObjectId
+  id  String  @id @default(auto()) @map("_id") @db.ObjectId  
   userId             String
   type               String
   provider           String
