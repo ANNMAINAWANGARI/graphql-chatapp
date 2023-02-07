@@ -1,22 +1,21 @@
 "use client";
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import {signIn, signOut, useSession,getSession} from 'next-auth/react'
-import {theme} from '../chakra/theme'
-import { NextPageContext } from 'next';
 import Auth from '@/components/Auth';
 import Chat from '@/components/Chat';
 import { Box } from '@chakra-ui/react';
+import { Inter } from '@next/font/google';
+import { NextPageContext } from 'next';
+import { getSession, useSession } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const {data} = useSession()
+  const {data:session} = useSession()
   const reloadSession = ()=>{}
-  console.log('here is the data',data)
+  console.log('here is the data',session)
+  
   return (
     <Box>
-      {data?.user?.username?(<Chat session={data}/>):(<Auth session={data} reloadSession={reloadSession}/>)}
+      {session?.user?.username?(<Chat session={session}/>):(<Auth session={session} reloadSession={reloadSession}/>)}
     </Box>
   )
 }
