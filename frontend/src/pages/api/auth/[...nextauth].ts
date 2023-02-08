@@ -11,5 +11,13 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
-  secret:process.env.NEXTAUTH_SECRET
+  secret:process.env.NEXTAUTH_SECRET,
+  callbacks:{
+    async session({ session, token, user }) {
+      const sessionUser = { ...session.user, ...user }
+      return {
+        ...session,user: sessionUser,
+      };
+    }
+  }
 })
