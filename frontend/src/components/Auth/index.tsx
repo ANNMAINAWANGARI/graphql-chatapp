@@ -5,6 +5,7 @@ import { Button, Center, Image, Input, Stack, Text } from '@chakra-ui/react';
 import { Session } from 'next-auth';
 import { signIn } from 'next-auth/react';
 import React, {useState} from 'react';
+import { toast } from 'react-hot-toast';
 import Operations from '../../graphql/operations/users'
 
 type authProps = {
@@ -15,15 +16,32 @@ type authProps = {
 
 const Auth:React.FC<authProps> = ({session,reloadSession}) => {
     const [username, setUsername] = useState("");
-    const [createUsername, { data, loading, error }] = useMutation<
+    const [createUsername, { loading, error }] = useMutation<
     CreateUsernameData,CreateUsernameVariables>(Operations.Mutations.createUsername);
 
-    console.log('data',data,loading,error)
+    console.log('data',loading,error)
     const onSubmit = async()=>{
         if(!username)return;
         try{ 
-           await createUsername({ variables: { username: username } });
+          const {data} = await createUsername({ variables: { username: username } });
+           if (!data?.createUsername) {
+            throw new Error();
+          }
+          if (data.createUsername.error) {
+            const {
+              createUsername: { error },
+            } = data;
+           throw new Error()
+            
+          }
+          toast.success("Username successfully created");
+          console.log('success')
+          /**
+       * Reload session to obtain new username
+       */
+      reloadSession();
         }catch(error:any){
+            toast.error("There was an error")
             console.log('CreateUsernameError',error)
         }
     }
@@ -39,7 +57,7 @@ const Auth:React.FC<authProps> = ({session,reloadSession}) => {
                  value={username}
                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>setUsername(event.target.value)}
                 />
-                <Button onClick={onSubmit} width="100%">Submit</Button>
+                <Button onClick={onSubmit} width="100%" isLoading={loading}>Submit</Button>
                 </>
                 )
                 :(
