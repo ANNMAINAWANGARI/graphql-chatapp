@@ -22,6 +22,7 @@ const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
         event.preventDefault();
         searchUsers({ variables: { username } });
       };
+      console.log('dataaaaaaaaa',data)
     return (
         <ModalComponent isOpen={isOpen} onClose={onClose} size={{ base: "sm", md: "md" }}>
         <ModalOverlay />

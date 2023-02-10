@@ -5,12 +5,12 @@ import { startStandaloneServer } from '@apollo/server/standalone'
 const typeDefs = `#graphql
 scalar Date
 
-  type User {
+  type SearchedUser {
     id: String
     username: String
   }
   type Query {
-    searchUsers(username: String!): [User]
+    searchUsers(username: String!): [SearchedUser]
   }
   type Mutation {
     createUsername(username: String!): CreateUsernameResponse
