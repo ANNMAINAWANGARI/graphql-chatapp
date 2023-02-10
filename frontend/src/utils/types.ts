@@ -8,3 +8,15 @@ export interface CreateUsernameVariables {
       error: string;
     };
   }
+
+  export interface SearchUsersInput{
+    username:string;
+  }
+  export interface SearchedUsers{
+    id:string;
+    username:string;
+  }
+
+  export interface SearchUsersData{
+    searchedUsers:Array<SearchedUsers>
+  }

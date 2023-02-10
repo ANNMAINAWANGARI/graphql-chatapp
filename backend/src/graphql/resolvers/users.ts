@@ -34,12 +34,12 @@ const resolvers = {
                         username,
                       }
                   })
-                  
+                  console.log('createUsernameSuccess')
                 return { success: true };
             }catch(error:any){
                 console.log('createUsernameError',error)
                 return{
-                    error:error?.message
+                    error:error
                 }
             }
             

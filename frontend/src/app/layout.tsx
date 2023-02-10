@@ -4,6 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import {theme} from '../chakra/theme'
 import { ApolloProvider } from "@apollo/client";
 import { client } from "@/graphql/apollo-client";
+import { Toaster } from 'react-hot-toast';
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
       <ApolloProvider client={client}>
         <AuthContext>
         <ChakraProvider theme={theme}>{children}</ChakraProvider>
+        <Toaster/>
         </AuthContext>
       </ApolloProvider>
       </body>
