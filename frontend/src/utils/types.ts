@@ -18,5 +18,5 @@ export interface CreateUsernameVariables {
   }
 
   export interface SearchUsersData{
-    searchedUsers:Array<SearchedUsers>
+    searchUsers:Array<SearchedUsers>
   }

@@ -1,4 +1,4 @@
-import { SearchUsersData, SearchUsersInput } from '@/utils/types';
+import { SearchedUsers, SearchUsersData, SearchUsersInput } from '@/utils/types';
 import { useLazyQuery } from '@apollo/client';
 import {
     Button, Input, Modal as ModalComponent, ModalBody,
@@ -8,6 +8,8 @@ import {
 import { Session } from 'next-auth';
 import React, { useState } from 'react';
 import UserOperations from '../../../../graphql/operations/users';
+import Participants from './Participants';
+import UserSearchList from './UserSearchList';
 
 interface ModalProps {
     isOpen:boolean;
@@ -18,11 +20,18 @@ interface ModalProps {
 const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
     const [username, setUsername] = useState("");
     const [searchUsers,{data,loading,error}] = useLazyQuery<SearchUsersData,SearchUsersInput>(UserOperations.Queries.searchUsers)
+    const [participants,setParticipants] = useState<Array<SearchedUsers>>([])
+    // functions
     const onSearch = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         searchUsers({ variables: { username } });
       };
-      console.log('dataaaaaaaaa',data)
+    const addParticipant = (user:SearchedUsers)=>{
+      setParticipants((prev)=>{return [...prev,user]})
+    };
+    const removeParticipant = (userId: string) => {
+      setParticipants((prev) => prev.filter((u) => u.id !== userId));
+    };
     return (
         <ModalComponent isOpen={isOpen} onClose={onClose} size={{ base: "sm", md: "md" }}>
         <ModalOverlay />
@@ -40,13 +49,21 @@ const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
                 <Button
                   width="100%"
                   type="submit"
-                //   isLoading={searchUsersLoading}
+                  isLoading={loading}
                   disabled={!username}
                 >
                   Search
                 </Button>
               </Stack>
             </form>
+            {data?.searchUsers && <UserSearchList users={data.searchUsers} addParticipant={addParticipant}/>}
+           { participants.length !== 0 && 
+           <>
+            <Participants
+                  participants={participants}
+                  removeParticipant={removeParticipant}
+                />
+           </>}
           </ModalBody>
 
           
