@@ -20,3 +20,13 @@ export interface CreateUsernameVariables {
   export interface SearchUsersData{
     searchUsers:Array<SearchedUsers>
   }
+
+  //conversations
+  export interface CreateConversationData {
+    createConversation: {
+      conversationId: string;
+    };
+  }
+  export interface CreateConversationInput {
+    participantIds :Array<string>
+  }

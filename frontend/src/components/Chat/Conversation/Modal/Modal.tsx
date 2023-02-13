@@ -1,5 +1,5 @@
-import { SearchedUsers, SearchUsersData, SearchUsersInput } from '@/utils/types';
-import { useLazyQuery } from '@apollo/client';
+import { CreateConversationData, CreateConversationInput, SearchedUsers, SearchUsersData, SearchUsersInput } from '@/utils/types';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import {
     Button, Input, Modal as ModalComponent, ModalBody,
     ModalCloseButton, ModalContent,
@@ -7,9 +7,12 @@ import {
 } from '@chakra-ui/react';
 import { Session } from 'next-auth';
 import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import UserOperations from '../../../../graphql/operations/users';
 import Participants from './Participants';
 import UserSearchList from './UserSearchList';
+import ConversationOperations from '../../../../graphql/operations/conversation'
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface ModalProps {
     isOpen:boolean;
@@ -18,9 +21,15 @@ interface ModalProps {
 };
 
 const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
+  const router = useRouter()
+  const searchParams = useSearchParams();
     const [username, setUsername] = useState("");
     const [searchUsers,{data,loading,error}] = useLazyQuery<SearchUsersData,SearchUsersInput>(UserOperations.Queries.searchUsers)
+    const [createConversation,{loading:createConversationLoading}] =useMutation<CreateConversationData,CreateConversationInput>(ConversationOperations.Mutations.createConversation)
     const [participants,setParticipants] = useState<Array<SearchedUsers>>([])
+    const {
+      user: { id: userId },
+    } = session;
     // functions
     const onSearch = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -32,6 +41,33 @@ const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
     const removeParticipant = (userId: string) => {
       setParticipants((prev) => prev.filter((u) => u.id !== userId));
     };
+    const onCreateConversation = async()=>{
+      const participantIds = [userId,...participants.map((p) => p.id)];
+      try{
+        const {data,errors} = await createConversation({variables: {
+          participantIds,
+        },})
+        if (!data?.createConversation || errors) {
+          throw new Error("Failed to create conversation");
+        }
+        const {
+          createConversation: { conversationId },
+        } = data;
+        // router.push({ query: { conversationId } });
+        const page = searchParams.get(`${conversationId}`);
+        router.push(`${page}`);
+  
+        /**
+         * Clear state and close modal
+         * on successful creation
+         */
+        setParticipants([]);
+        setUsername("");
+        onClose()
+      }catch(error:any){
+        toast.error(error?.message)
+      }
+    }
     return (
         <ModalComponent isOpen={isOpen} onClose={onClose} size={{ base: "sm", md: "md" }}>
         <ModalOverlay />
@@ -62,7 +98,14 @@ const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
             <Participants
                   participants={participants}
                   removeParticipant={removeParticipant}
-                />
+            />
+            <Button
+             bg="brand.100"
+             _hover={{ bg: "brand.100" }}
+             width="100%"
+             mt={6}
+             isLoading={createConversationLoading}
+             onClick={onCreateConversation}>Create Conversation</Button>
            </>}
           </ModalBody>
 

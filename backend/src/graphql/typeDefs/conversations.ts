@@ -11,9 +11,9 @@ const typeDefs = `#graphql
   #   user: User
   #   hasSeenLatestMessage: Boolean
   # }
-  # type CreateConversationResponse {
-  #   conversationId: String
-  # }
+  type CreateConversationResponse {
+    conversationId: String
+  }
   # type ConversationDeletedResponse {
   #   id: String
   # }
@@ -25,9 +25,9 @@ const typeDefs = `#graphql
   # type Query {
   #   conversations: [Conversation]
   # }
-  # type Mutation {
-  #   createConversation(participantIds: [String]): CreateConversationResponse
-  # }
+  type Mutation {
+    createConversation(participantIds: [String]): CreateConversationResponse
+  }
   # type Mutation {
   #   markConversationAsRead(userId: String!, conversationId: String!): Boolean
   # }
