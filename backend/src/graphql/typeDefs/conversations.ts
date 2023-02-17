@@ -1,16 +1,18 @@
 
 const typeDefs = `#graphql
-  # type Conversation {
-  #   id: String
-  #   latestMessage: Message
-  #   participants: [Participant]
-  #   updatedAt: Date
-  # }
-  # type Participant {
-  #   id: String
-  #   user: User
-  #   hasSeenLatestMessage: Boolean
-  # }
+scalar Date
+  type Conversation {
+    id: String
+    latestMessage: Message
+    participants: [Participant]
+    updatedAt: Date
+    createdAt: Date
+  }
+  type Participant {
+    id: String
+    user: User
+    hasSeenLatestMessage: Boolean
+  }
   type CreateConversationResponse {
     conversationId: String
   }
@@ -22,9 +24,9 @@ const typeDefs = `#graphql
   #   addedUserIds: [String]
   #   removedUserIds: [String]
   # }
-  # type Query {
-  #   conversations: [Conversation]
-  # }
+  type Query {
+    conversations: [Conversation]
+  }
   type Mutation {
     createConversation(participantIds: [String]): CreateConversationResponse
   }

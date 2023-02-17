@@ -1,4 +1,24 @@
 import { gql } from '@apollo/client';
+const conversationFields =`
+          id
+          participants{
+            user {
+             id
+             username
+            }
+            hasSeenLatestMessage
+          }
+          updatedAt
+          latestMessage{
+            id
+            sender{
+              id
+              username
+            }
+            body
+            createdAt
+          }
+`
 
 /* eslint import/no-anonymous-default-export:  */
 export default {
@@ -10,5 +30,14 @@ export default {
         }
       }
         `
+    },
+    Queries:{
+      conversations:gql`
+       query Conversations {
+        conversations{
+          ${conversationFields}
+        }
+       }
+      `
     }
 }

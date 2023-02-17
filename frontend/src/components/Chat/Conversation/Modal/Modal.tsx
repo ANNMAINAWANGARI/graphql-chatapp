@@ -14,26 +14,35 @@ import UserSearchList from './UserSearchList';
 import ConversationOperations from '../../../../graphql/operations/conversation'
 import { useRouter, useSearchParams } from 'next/navigation';
 
+
 interface ModalProps {
     isOpen:boolean;
     onClose:()=>void;
     session:Session;
+    
 };
 
 const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
   const router = useRouter()
-  const searchParams = useSearchParams();
+    const searchParams = useSearchParams();
     const [username, setUsername] = useState("");
-    const [searchUsers,{data,loading,error}] = useLazyQuery<SearchUsersData,SearchUsersInput>(UserOperations.Queries.searchUsers)
+    const [searchUsers,{data,loading}] = useLazyQuery<SearchUsersData,SearchUsersInput>(UserOperations.Queries.searchUsers)
     const [createConversation,{loading:createConversationLoading}] =useMutation<CreateConversationData,CreateConversationInput>(ConversationOperations.Mutations.createConversation)
     const [participants,setParticipants] = useState<Array<SearchedUsers>>([])
     const {
       user: { id: userId },
     } = session;
+    
     // functions
-    const onSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    const onSearch = async(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        searchUsers({ variables: { username } });
+        try{
+         let {error} =await searchUsers({ variables: { username } });
+         if(error)throw new Error('Error searching for the username')
+        }catch(error:any){
+          toast.error(error?.message)
+        }
+        console.log(data,'dataaaaa')
       };
     const addParticipant = (user:SearchedUsers)=>{
       setParticipants((prev)=>{return [...prev,user]})
@@ -50,13 +59,9 @@ const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
         if (!data?.createConversation || errors) {
           throw new Error("Failed to create conversation");
         }
-        const {
-          createConversation: { conversationId },
-        } = data;
-        // router.push({ query: { conversationId } });
-        const page = searchParams.get(`${conversationId}`);
-        router.push(`${page}`);
-  
+        const {createConversation: { conversationId },} = data;
+        router.push(`/?conversationId=${conversationId}`)
+        
         /**
          * Clear state and close modal
          * on successful creation

@@ -19,5 +19,13 @@ scalar Date
     success: Boolean
     error: String
   }
+  type User{
+    id: String
+    username: String
+    email:String
+    emailVerified:Boolean
+    name:String
+    image:String
+  }
 `
 export default typeDefs;

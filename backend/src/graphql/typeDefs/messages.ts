@@ -2,12 +2,12 @@
 
 
 const typeDefs = `#graphql
-  # type Message {
-  #   id: String
-  #   sender: User
-  #   body: String
-  #   createdAt: Date
-  # }
+  type Message {
+    id: String
+    sender: User
+    body: String
+    createdAt: Date
+  }
   # type Query {
   #   messages(conversationId: String): [Message]
   # }

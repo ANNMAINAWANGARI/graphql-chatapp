@@ -1,6 +1,10 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 // import { PubSub } from "graphql-subscriptions"
 // import {Session} from 'next-auth'
+import {
+  conversationPopulated,
+  participantPopulated,
+} from "../graphql/resolvers/conversation";
 
 export interface Session {
     user: User;
@@ -27,3 +31,7 @@ export interface CreateUsernameResponse {
     error?: String
   }
 // User Interface End
+//This will allow Prisma to generate the conversationPopulated type instead of creating it manually
+export type ConversationPopulated = Prisma.ConversationGetPayload<{
+  include: typeof conversationPopulated;
+}>;

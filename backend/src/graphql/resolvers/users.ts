@@ -21,13 +21,14 @@ const resolvers = {
                 username: {
                   contains: searchedUsername,
                   not: myUsername,
-                  mode: "insensitive",
+                  //mode: "insensitive",
                 },
               },
             });
-    
+            console.log('users',users)
             return users;
           }catch(error){
+            console.log('errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrror',error.message)
             throw new GraphQLError(error?.message);
           }
           console.log('search users',args.username)
