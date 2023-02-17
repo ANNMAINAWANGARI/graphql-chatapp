@@ -1,10 +1,16 @@
 import { Box, Text } from '@chakra-ui/react';
 import { Session } from 'next-auth';
 import React, { useState } from 'react';
-import ConversationModal from './Modal/Modal'
+import ConversationModal from './Modal/Modal';
+import {
+    ConversationPopulated,
+  } from "../../../../../backend/src/utils/types";
+  
 
 interface ConversationListProps  {
     session:Session
+    conversations: Array<ConversationPopulated>
+   
 };
 
 const ConversationList:React.FC<ConversationListProps> = ({session}) => {
@@ -24,7 +30,7 @@ const ConversationList:React.FC<ConversationListProps> = ({session}) => {
                 <Text color="whiteAlpha.800" fontWeight={500}>Find or start a conversation</Text>
                 
             </Box>
-            <ConversationModal isOpen={open} onClose={onClose} session={session}/>
+            <ConversationModal isOpen={open} onClose={onClose} session={session} />
         </Box>
     )
 }
