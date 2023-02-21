@@ -10,8 +10,12 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import resolvers from './graphql/resolvers/index.js';
 import * as dotenv from 'dotenv';
 import {getSession} from 'next-auth/react'
-import { GraphQLContext, Session } from './utils/types.js';
+import { GraphQLContext, Session, SubscriptionContext } from './utils/types.js';
 import { PrismaClient } from '@prisma/client';
+import { createServer } from 'http';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { PubSub } from "graphql-subscriptions";
 
 interface MyContext {
   token?: String;
@@ -28,10 +32,41 @@ const schema = makeExecutableSchema({
   resolvers
 })
 const prisma = new PrismaClient()
+const pubsub = new PubSub();
+// Creating the WebSocket server
+const wsServer = new WebSocketServer({
+  // This is the `httpServer` we created in a previous step.
+  server: httpServer,
+  // Pass a different path here if app.use
+  // serves expressMiddleware at a different path
+  path: '/graphql/subscriptions',
+});
+
+// Hand in the schema we just created and have the
+// WebSocketServer start listening.
+const serverCleanup = useServer({ schema ,context:async(ctx:SubscriptionContext):Promise<GraphQLContext>=>{
+  if (ctx.connectionParams && ctx.connectionParams.session) {
+    const { session } = ctx.connectionParams;
+    return { session, prisma,pubsub };
+  }
+  // Otherwise let our resolvers know we don't have a current user
+  return { session: null, prisma,pubsub};
+}}, wsServer);
 const server = new ApolloServer({
   schema,
   plugins: [
-    ApolloServerPluginDrainHttpServer({ httpServer })],
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
+  ],
+    
 });
 await server.start();
 app.use('/graphql',
@@ -44,7 +79,7 @@ app.use('/graphql',
     context: async ({ req,res }):Promise<GraphQLContext> => 
       { 
         const session = (await getSession({ req })) as unknown as Session
-          return{prisma,session}}
+          return{prisma,session,pubsub}}
       ,
   }),
 );

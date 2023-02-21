@@ -7,18 +7,22 @@ import {
     ConversationPopulated,
   } from "../../../../../backend/src/utils/types";
 import ConversationItem from './ConversationItem';
+import { useSearchParams } from 'next/navigation';
   
 
 interface ConversationListProps  {
     session:Session
     conversations: Array<ConversationPopulated>
+    onViewConversation:(conversationId:string)=>void
    
 };
 
-const ConversationList:React.FC<ConversationListProps> = ({session,conversations}) => {
+const ConversationList:React.FC<ConversationListProps> = ({session,conversations,onViewConversation}) => {
     const [open,setOpen] = useState(false);
     const onOpen = ()=>setOpen(true)
     const onClose = ()=>setOpen(false)
+    const searchParams = useSearchParams();
+    const {user:{id:userId}} = session
     return (
         <Box width='100%' overflow="hidden">
             <Box
@@ -33,7 +37,13 @@ const ConversationList:React.FC<ConversationListProps> = ({session,conversations
                 
             </Box>
             <ConversationModal isOpen={open} onClose={onClose} session={session} />
-            {conversations.map((conversation)=>(<ConversationItem conversation={conversation} key={conversation.id}/>))}
+            {conversations.map((conversation)=>(
+            <ConversationItem 
+                    conversation={conversation}
+                    key={conversation.id}
+                    onClick={() => onViewConversation(conversation.id)}
+                    isSelected={conversation.id == searchParams.get('conversationId')} 
+                    userId={userId}/>))}
             <Box
              position="absolute"
              bottom={0}

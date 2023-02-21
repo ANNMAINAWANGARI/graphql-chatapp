@@ -24,6 +24,7 @@ scalar Date
   #   addedUserIds: [String]
   #   removedUserIds: [String]
   # }
+  
   type Query {
     conversations: [Conversation]
   }
@@ -42,9 +43,9 @@ scalar Date
   #     participantIds: [String]!
   #   ): Boolean
   # }
-  # type Subscription {
-  #   conversationCreated: Conversation
-  # }
+  type Subscription {
+    conversationCreated: Conversation
+  }
   # type Subscription {
   #   conversationUpdated: ConversationUpdatedSubscriptionPayload
   # }
