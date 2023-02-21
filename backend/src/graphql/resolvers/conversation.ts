@@ -1,6 +1,9 @@
 import { GraphQLError } from "graphql";
 import { ConversationPopulated, GraphQLContext } from "../../utils/types";
 import { Prisma } from "@prisma/client";
+import { withFilter } from "graphql-subscriptions";
+
+
 
 const resolvers = {
     Query:{
@@ -47,7 +50,7 @@ const resolvers = {
     Mutation:{
         createConversation:async(_:any,args:{participantIds:Array<string>},context:GraphQLContext):Promise<{conversationId:string}>=>{
             const {participantIds} = args;
-            const {session,prisma} = context;
+            const {session,prisma,pubsub} = context;
             if (!session?.user) {
                 throw new GraphQLError("Not authorized");
               }
@@ -67,6 +70,7 @@ const resolvers = {
                     },
                     include: conversationPopulated
                     })
+                    pubsub.publish('CONVERSATION_CREATED',{conversationCreated:conversation})
                     return {
                       conversationId:conversation.id
                     }
@@ -74,9 +78,24 @@ const resolvers = {
                 console.log("createConversation error", error);
                 throw new GraphQLError("Error creating conversation");
               }
-            console.log('conversation resolver')
-            console.log('args',args.participantIds)
+            
         }
+    },
+    
+    Subscription:{
+      conversationCreated:{
+        
+        subscribe:withFilter((_:any,__any,context:GraphQLContext)=>{
+          const { pubsub } = context;
+          console.log('subscribed')
+          return pubsub.asyncIterator(['CONVERSATION_CREATED']);
+        },(payload:ConversationCreatedSubscriptionPayload, _,context:GraphQLContext)=>{
+          const { session } = context;
+          const {conversationCreated:{participants}} = payload;
+          const userIsParticipant = !!participants.find((p)=>(p.userId ===session.user.id))
+          return userIsParticipant;
+        })
+      }
     }
 }
 export const participantPopulated =
@@ -104,4 +123,7 @@ export const conversationPopulated =
       },
     },
   });
+  export interface ConversationCreatedSubscriptionPayload {
+    conversationCreated: ConversationPopulated;
+  }
 export default resolvers;
