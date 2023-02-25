@@ -1,12 +1,89 @@
-import React from 'react';
+
+import { MessagesData, MessageSubscriptionData, MessagesVariables } from "@/utils/types";
+import { useQuery } from "@apollo/client";
+import { Box, Flex, Stack } from "@chakra-ui/react";
+import React, { useEffect, useRef } from "react";
+import toast from "react-hot-toast"
+import MessageOperations from "../../../../graphql/operations/messages";
+import SkeletonLoader from "../../../common/SkeletonLoader";
+import MessageItem from "./MessageItem";
 
 type MessagesProps = {
     userId: string;
     conversationId: string;
 };
 
-const Messages:React.FC<MessagesProps> = () => {
-    
-    return <div>Messages</div>
+const Messages:React.FC<MessagesProps> = ({userId,conversationId}) => {
+    const { data, loading, error, subscribeToMore } = useQuery<
+    MessagesData,
+    MessagesVariables
+  >(MessageOperations.Query.messages, {
+    variables: {
+      conversationId,
+    },
+    onError: ({ message }) => {
+      toast.error(message);
+    },
+    onCompleted:()=>{
+        toast.success('Messages Fetch Successful')
+    }
+  });
+console.log('message data',data)
+  const subscribeToMoreMessages = (conversationId: string) => {
+    subscribeToMore({
+      document: MessageOperations.Subscriptions.messageSent,
+      variables: {
+        conversationId,
+      },
+      updateQuery: (prev, { subscriptionData }: MessageSubscriptionData) => {
+        if (!subscriptionData) return prev;
+
+        console.log("HERE IS SUBSCRIPTION DATA", subscriptionData);
+
+        const newMessage = subscriptionData.data.messageSent;
+
+        return Object.assign({}, prev, {
+          messages:
+            newMessage.sender.id === userId
+              ? prev.messages
+              : [newMessage, ...prev.messages],
+        });
+      },
+    });
+  };
+  useEffect(() => {
+    subscribeToMoreMessages(conversationId);
+    let mounted = true;
+    //if(mounted){subscribeToMoreMessages(conversationId)}
+    //const unsubscribe = subscribeToMoreMessages(conversationId);
+    //return () => unsubscribe();
+    //return () => mounted = false;
+  }, [conversationId]);
+
+  if (error) {
+    return null;
+  }
+    return (
+    <Flex direction="column" justify="flex-end" overflow="hidden">
+        {loading && (
+        <Stack spacing={4} px={4}>
+          <SkeletonLoader count={4} height="60px" width="100%" />
+        </Stack>
+        )}
+         {data?.messages && (
+        <Flex direction="column-reverse" overflowY="scroll" height="100%">
+          {data.messages.map((message) => (
+            // <div key={message.id}>{message.body}</div>
+            <MessageItem
+              key={message.id}
+              message={message}
+            //   sentByMe={message.sender.id === userId}
+            sentByMe={true}
+            />
+          ))}
+        </Flex>
+      )}
+    </Flex>
+    )
 }
 export default Messages;

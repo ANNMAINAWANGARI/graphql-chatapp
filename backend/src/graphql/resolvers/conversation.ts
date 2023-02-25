@@ -98,8 +98,7 @@ const resolvers = {
       }
     }
 }
-export const participantPopulated =
-  Prisma.validator<Prisma.ConversationParticipantInclude>()({
+export const participantPopulated = Prisma.validator<Prisma.ConversationParticipantInclude>()({
     user: {
       select: {
         id: true,
@@ -107,6 +106,7 @@ export const participantPopulated =
       },
     },
   });
+
 export const conversationPopulated =
   Prisma.validator<Prisma.ConversationInclude>()({
     participants: {

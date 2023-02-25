@@ -3,7 +3,7 @@ import React from 'react';
 import { useRouter } from "next/navigation";
 import { useSearchParams } from 'next/navigation';
 import { Box, Button, Flex, Stack, Text } from "@chakra-ui/react";
-import MessageInput from "./Input";
+import MessageInput from "./Messages/Input";
 import MessagesHeader from "./Messages/Header";
 import Messages from "./Messages/Messages";
 import NoConversationSelected from "./NoConversationSelected";
