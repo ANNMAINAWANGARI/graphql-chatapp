@@ -14,7 +14,7 @@ export default function Home() {
     const event = new Event('visibilitychange');
     document.dispatchEvent(event)
   }
-  console.log('here is the data',session)
+  //console.log('here is the data',session)
   
   return (
     <Box>

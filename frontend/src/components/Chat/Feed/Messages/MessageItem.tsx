@@ -2,7 +2,9 @@ import React from 'react';
 import { MessagePopulated } from '../../../../../../backend/src/utils/types';
 import { Avatar, Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { formatRelative } from "date-fns";
-import enUS from "date-fns/locale/en-US";
+import enUS from 'date-fns/locale/en-US';
+
+//import enUS from "date-fns/locale/en-US";
 
 type MessageItemProps = {
     message:MessagePopulated
@@ -37,7 +39,7 @@ const MessageItem:React.FC<MessageItemProps> = ({message,sentByMe}) => {
                     <Text fontWeight={500} textAlign={sentByMe ? "right" : "left"}>{message.sender.username}</Text>
                  )}
                  <Text fontSize={14} color="whiteAlpha.700">
-                  {/* {formatRelative(message.createdAt, new Date(), {
+                  {formatRelative(new Date(message.createdAt), new Date(), {
                    locale: {
                     ...enUS,
                     formatRelative: (token) =>
@@ -45,7 +47,7 @@ const MessageItem:React.FC<MessageItemProps> = ({message,sentByMe}) => {
                     token as keyof typeof formatRelativeLocale
                     ],
                    },
-                  })} */}
+                  })}
                  </Text>
              </Stack>
              <Flex direction="row" justify={sentByMe ? "flex-end" : "flex-start"}>

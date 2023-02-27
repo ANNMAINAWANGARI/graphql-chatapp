@@ -25,7 +25,7 @@ const ConversationWrapper:React.FC<ConversationWrapperProps> = ({session}) => {
         subscribeToMore({
             document:ConversationOperations.Subscriptions.conversationCreated,
             updateQuery: (prev, { subscriptionData }:{subscriptionData:{data:{conversationCreated:ConversationPopulated}}}) => {
-                console.log('subdata',subscriptionData)
+                //console.log('subdata',subscriptionData)
                 if (!subscriptionData.data) return prev;
                 const newConversation = subscriptionData.data.conversationCreated;
                 return Object.assign({
@@ -36,7 +36,7 @@ const ConversationWrapper:React.FC<ConversationWrapperProps> = ({session}) => {
     }
     const onViewConversation = async(conversationId:string)=>{
         // Push the conversationId to the router query params
-        console.log('clicked')
+        //console.log('clicked')
         router.push(`/?conversationId=${conversationId}`)
         // Mark conversation as read
     }

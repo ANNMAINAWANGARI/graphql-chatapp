@@ -4,7 +4,7 @@ import React,{useState} from 'react';
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client";
 import MessageOperations from "../../../../graphql/operations/messages";
-import { SendMessageVariables } from '@/utils/types';
+import { MessagesData, SendMessageVariables } from '@/utils/types';
 import {  ObjectID } from 'bson';
 import { SendMessageArguments } from '../../../../../../backend/src/utils/types';
 
@@ -30,16 +30,54 @@ const MessageInput:React.FC<InputProps> = ({session,conversationId}) => {
          conversationId,
          body: messageBody,
        };
+       setMessageBody('')
        const { data, errors } = await sendMessage({
          variables: {
            ...newMessage,
-         }})
-         console.log('inputdata',data)
+         },
+         optimisticResponse: {
+					sendMessage: true,
+				},
+        update:(cache)=>{
+          const existingMessages = cache.readQuery<MessagesData>({
+						query: MessageOperations.Query.messages,
+						variables: {
+							conversationId,
+						},
+					}) as MessagesData;
+          cache.writeQuery<MessagesData, { conversationId: string }>({
+						query: MessageOperations.Query.messages,
+						variables: {
+							conversationId,
+						},
+						data: {
+							...existingMessages,
+							messages: [
+								{
+									id: newId,
+									body: messageBody,
+									senderId: session.user.id,
+									conversationId,
+									sender: {
+										id: session.user.id,
+										username: session.user.username,
+									},
+									createdAt: new Date(Date.now()),
+									updatedAt: new Date(Date.now()),
+								},
+								...(existingMessages?.messages || []),
+							],
+						},
+					});
+        }
+        })
+        
+        // console.log('inputdata',data)
          if (!data?.sendMessage || errors) {
            throw new Error("Error sending message");
          }
        }catch(error:any){
-         console.log("onSendMessage error", error);
+         //console.log("onSendMessage error", error);
          toast.error(error?.message);
        }
     }
@@ -62,7 +100,7 @@ const MessageInput:React.FC<InputProps> = ({session,conversationId}) => {
             borderColor: "whiteAlpha.300",
           }}
         />
-        {/* <Button type='submit'>Send</Button> */}
+        <Button type='submit'>Send</Button>
       </form>
     </Box>
     )

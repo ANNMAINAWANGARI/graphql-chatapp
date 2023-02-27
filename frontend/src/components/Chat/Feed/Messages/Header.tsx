@@ -17,7 +17,7 @@ const Header:React.FC<HeaderProps> = ({userId,conversationId}) => {
     const { data, loading } = useQuery<ConversationsData,any>(
         ConversationOperations.Queries.conversations
       );
-      console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',data)
+      //console.log('dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',data)
       const conversation = data?.conversations.find(
         (conversation) => conversation.id === conversationId
       );

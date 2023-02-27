@@ -53,11 +53,6 @@ console.log('message data',data)
   };
   useEffect(() => {
     subscribeToMoreMessages(conversationId);
-    let mounted = true;
-    //if(mounted){subscribeToMoreMessages(conversationId)}
-    //const unsubscribe = subscribeToMoreMessages(conversationId);
-    //return () => unsubscribe();
-    //return () => mounted = false;
   }, [conversationId]);
 
   if (error) {
@@ -77,8 +72,8 @@ console.log('message data',data)
             <MessageItem
               key={message.id}
               message={message}
-            //   sentByMe={message.sender.id === userId}
-            sentByMe={true}
+              sentByMe={message.sender.id === userId}
+            
             />
           ))}
         </Flex>

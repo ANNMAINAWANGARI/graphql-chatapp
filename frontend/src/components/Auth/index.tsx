@@ -19,7 +19,7 @@ const Auth:React.FC<authProps> = ({session,reloadSession}) => {
     const [createUsername, { loading, error }] = useMutation<
     CreateUsernameData,CreateUsernameVariables>(Operations.Mutations.createUsername);
 
-    console.log('data',loading,error)
+    //console.log('data',loading,error)
     const onSubmit = async()=>{
         if(!username)return;
         try{ 
@@ -35,14 +35,14 @@ const Auth:React.FC<authProps> = ({session,reloadSession}) => {
             
           }
           toast.success("Username successfully created");
-          console.log('success')
+          //console.log('success')
           /**
        * Reload session to obtain new username
        */
       reloadSession();
         }catch(error:any){
             toast.error("There was an error")
-            console.log('CreateUsernameError',error)
+           // console.log('CreateUsernameError',error)
         }
     }
     
