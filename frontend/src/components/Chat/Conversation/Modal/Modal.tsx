@@ -42,7 +42,7 @@ const Modal:React.FC<ModalProps> = ({isOpen,onClose,session}) => {
         }catch(error:any){
           toast.error(error?.message)
         }
-        console.log(data,'dataaaaa')
+        //console.log(data,'dataaaaa')
       };
     const addParticipant = (user:SearchedUsers)=>{
       setParticipants((prev)=>{return [...prev,user]})

@@ -1,4 +1,4 @@
-import { ConversationPopulated } from "../../../backend/src/utils/types";
+import { ConversationPopulated, MessagePopulated } from "../../../backend/src/utils/types";
 
 export interface CreateUsernameVariables {
     username: string;
@@ -42,3 +42,27 @@ export interface CreateUsernameVariables {
       };
     };
   }
+  /**
+ * Messages
+ */
+  export interface SendMessageVariables {
+    id: string;
+    conversationId: string;
+    senderId: string;
+    body: string;
+  }
+export interface MessagesData {
+  messages: Array<MessagePopulated>;
+}
+
+export interface MessagesVariables {
+  conversationId: string;
+}
+
+export interface MessageSubscriptionData {
+  subscriptionData: {
+    data: {
+      messageSent: MessagePopulated;
+    };
+  };
+}

@@ -6,6 +6,7 @@ import {
   participantPopulated,
 } from "../graphql/resolvers/conversation";
 import { Context } from "graphql-ws/lib/server";
+import { messagePopulated } from "../graphql/resolvers/messages";
 
 export interface Session {
     user: User;
@@ -39,9 +40,20 @@ export type ConversationPopulated = Prisma.ConversationGetPayload<{
 export type ParticipantPopulated = Prisma.ConversationParticipantGetPayload<{
   include: typeof participantPopulated;
 }>;
-
+export type MessagePopulated = Prisma.MessageGetPayload<{
+  include: typeof messagePopulated;
+}>
 export interface SubscriptionContext extends Context {
   connectionParams: {
     session?: Session;
   };
+}
+export interface SendMessageArguments {
+  id:string;
+  conversationId:string;
+  senderId:string;
+  body:string;
+}
+export interface MessageSentSubscriptionPayload{
+  messageSent:MessagePopulated
 }
