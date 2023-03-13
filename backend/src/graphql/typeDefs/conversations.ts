@@ -19,11 +19,11 @@ scalar Date
   # type ConversationDeletedResponse {
   #   id: String
   # }
-  # type ConversationUpdatedSubscriptionPayload {
-  #   conversation: Conversation
-  #   addedUserIds: [String]
-  #   removedUserIds: [String]
-  # }
+  type ConversationUpdatedSubscriptionPayload {
+    conversation: Conversation
+    addedUserIds: [String]
+    removedUserIds: [String]
+  }
   
   type Query {
     conversations: [Conversation]
@@ -31,9 +31,9 @@ scalar Date
   type Mutation {
     createConversation(participantIds: [String]): CreateConversationResponse
   }
-  # type Mutation {
-  #   markConversationAsRead(userId: String!, conversationId: String!): Boolean
-  # }
+  type Mutation {
+    markConversationAsRead(userId: String!, conversationId: String!): Boolean
+  }
   # type Mutation {
   #   deleteConversation(conversationId: String!): Boolean
   # }
@@ -46,9 +46,9 @@ scalar Date
   type Subscription {
     conversationCreated: Conversation
   }
-  # type Subscription {
-  #   conversationUpdated: ConversationUpdatedSubscriptionPayload
-  # }
+  type Subscription {
+    conversationUpdated: ConversationUpdatedSubscriptionPayload
+  }
   # type Subscription {
   #   conversationDeleted: ConversationDeletedResponse
   # }

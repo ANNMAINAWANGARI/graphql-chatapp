@@ -33,7 +33,7 @@ const formatRelativeLocale = {
     onClick: () => void;
     isSelected:boolean;
     //onEditConversation?: () => void;
-    //hasSeenLatestMessage?: boolean;
+    hasSeenLatestMessage?: boolean;
     //selectedConversationId?: string;
     //onDeleteConversation?: (conversationId: string) => void;
     //onLeaveConversation?: (conversation: ConversationPopulated) => void;
@@ -43,7 +43,7 @@ const ConversationItem:React.FC<ConversationItemProps> = ({
     userId,
     conversation,
     // selectedConversationId,
-    // hasSeenLatestMessage,
+     hasSeenLatestMessage,
     onClick,
     isSelected,
     // onEditConversation,
@@ -108,6 +108,11 @@ const ConversationItem:React.FC<ConversationItemProps> = ({
             )}
              </MenuList>
             </Menu>
+            <Flex position="absolute" left="-6px">
+              {hasSeenLatestMessage === false && (
+              <GoPrimitiveDot fontSize={18} color="#6B46C1" />
+              )}
+            </Flex>
             <Avatar />
             <Flex justify="space-between" width="80%" height="100%">
                 <Flex direction="column" width="70%" height="100%">

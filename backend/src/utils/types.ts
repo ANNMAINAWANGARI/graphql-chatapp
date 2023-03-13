@@ -57,3 +57,8 @@ export interface SendMessageArguments {
 export interface MessageSentSubscriptionPayload{
   messageSent:MessagePopulated
 }
+export interface ConversationUpdatedSubscriptionPayload{
+  conversationUpdated:{
+    conversation:ConversationPopulated
+  }
+}
