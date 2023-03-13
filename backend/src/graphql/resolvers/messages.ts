@@ -132,6 +132,11 @@ const resolvers = {
             include: conversationPopulated,
           });
           pubsub.publish("MESSAGE_SENT", { messageSent: newMessage })
+          pubsub.publish("CONVERSATION_UPDATED", {
+            conversationUpdated: {
+              conversation,
+            },
+          });
                 return true
             }catch(error:any){
                 console.log('sendMessageError',error)

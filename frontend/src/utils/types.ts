@@ -66,3 +66,12 @@ export interface MessageSubscriptionData {
     };
   };
 }
+export interface ConversationUpdatedData {
+  conversationUpdated: {
+    conversation: Omit<ConversationPopulated, "latestMessage"> & {
+      latestMessage: MessagePopulated;
+    };
+    addedUserIds: Array<string> | null;
+    removedUserIds: Array<string> | null;
+  };
+}
